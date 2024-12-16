@@ -1,0 +1,6 @@
+Items: {
+	GelatinousTurbine_Item: {
+		DisplayName: Gelatinous Turbine
+		Tooltip: ""
+	}
+}
