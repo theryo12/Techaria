@@ -1,28 +1,33 @@
 namespace Techaria.Systems;
 
 public abstract class Machine<TTile, TItem, TEntity>
-	where TTile : Machine<TTile, TItem, TEntity>.BaseTile
-	where TItem : Machine<TTile, TItem, TEntity>.BaseItem
-	where TEntity : Machine<TTile, TItem, TEntity>.BaseEntity
+    where TTile : Machine<TTile, TItem, TEntity>.BaseTile
+    where TItem : Machine<TTile, TItem, TEntity>.BaseItem
+    where TEntity : Machine<TTile, TItem, TEntity>.BaseEntity
 {
-	public abstract class BaseTile : ModTile {
+    public abstract class BaseTile : ModTile
+    {
 
-		public override string Name {get{
-			var name = GetType().FullName.Replace('+', '_').Split('.');
-			Console.WriteLine($"[36m{name[name.Length-1]}[0m");
-			return name[name.Length-1];
-		}}
+        public override string Name
+        {
+            get
+            {
+                var name = GetType().FullName.Replace('+', '_').Split('.');
+                Console.WriteLine($"[36m{name[name.Length - 1]}[0m");
+                return name[^1];
+            }
+        }
 
-		public virtual int width { get; }
-		public virtual int height{ get; }
-		public virtual int oriX { get => width / 2; }
-		public virtual int oriY { get => height / 2; }
+        public virtual int Width { get; }
+        public virtual int Height { get; }
+        public virtual int OriX { get => Width / 2; }
+        public virtual int OriY { get => Height / 2; }
 
-		public Point16 GetTopLeft(int i, int j)
+        public Point16 GetTopLeft(int i, int j)
         {
             Tile tile = Framing.GetTileSafely(i, j);
-            i -= tile.TileFrameX / 18 % width;
-            j -= tile.TileFrameY / 18 % height;
+            i -= tile.TileFrameX / 18 % Width;
+            j -= tile.TileFrameY / 18 % Height;
             return new Point16(i, j);
         }
 
@@ -30,19 +35,20 @@ public abstract class Machine<TTile, TItem, TEntity>
         {
             PreStaticDefaults();
 
-			Main.tileLavaDeath[Type] = false;
-			Main.tileNoAttach[Type] = true;
-			Main.tileFrameImportant[Type] = true;
-			TileID.Sets.DisableSmartCursor[Type] = true;
+            Main.tileLavaDeath[Type] = false;
+            Main.tileNoAttach[Type] = true;
+            Main.tileFrameImportant[Type] = true;
+            TileID.Sets.DisableSmartCursor[Type] = true;
 
             TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
-            TileObjectData.newTile.Width = width;
-            TileObjectData.newTile.Height = height;
-            TileObjectData.newTile.CoordinateHeights = new int[height];
-            for (int i = 0; i < height; i++) {
+            TileObjectData.newTile.Width = Width;
+            TileObjectData.newTile.Height = Height;
+            TileObjectData.newTile.CoordinateHeights = new int[Height];
+            for (int i = 0; i < Height; i++)
+            {
                 TileObjectData.newTile.CoordinateHeights[i] = 16;
             }
-            TileObjectData.newTile.Origin = new Point16(oriX, oriY);
+            TileObjectData.newTile.Origin = new Point16(OriX, OriY);
 
             ModifyTileObjectData();
             TileObjectData.addTile(Type);
@@ -72,24 +78,32 @@ public abstract class Machine<TTile, TItem, TEntity>
             ModContent.GetInstance<TEntity>().Kill(i, j);
         }
 
-	}
+    }
 
-	public abstract class BaseItem : ModItem {
-		public override string Name {get{
-			var name = GetType().FullName.Replace('+', '_').Split('.');
-			Console.WriteLine($"[36m{name[name.Length-1]}[0m");
-			return name[name.Length-1];
-		}}
+    public abstract class BaseItem : ModItem
+    {
+        public override string Name
+        {
+            get
+            {
+                var name = GetType().FullName.Replace('+', '_').Split('.');
+                Console.WriteLine($"[36m{name[^1]}[0m");
+                return name[^1];
+            }
+        }
 
-		public override void SetDefaults() {
-			Item.DefaultToPlaceableTile(ModContent.TileType<TTile>());
-		}
-	}
+        public override void SetDefaults()
+        {
+            Item.DefaultToPlaceableTile(ModContent.TileType<TTile>());
+        }
+    }
 
-	public abstract class BaseEntity : ModTileEntity {
-		public override bool IsTileValidForEntity(int x, int y) {
-			return Main.tile[x,y].TileType == ModContent.TileType<TTile>();
-		}
-	}
+    public abstract class BaseEntity : ModTileEntity
+    {
+        public override bool IsTileValidForEntity(int x, int y)
+        {
+            return Main.tile[x, y].TileType == ModContent.TileType<TTile>();
+        }
+    }
 
 }

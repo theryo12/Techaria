@@ -3,19 +3,22 @@ using Terraria.ModLoader.IO;
 
 namespace Techaria.Systems;
 
-public interface IContain<T> where T : Resources<T>, new() {
-	
-	public T[] GetInputSlotsForConnector(object connector) {
+public interface IContain<T> where T : Resources<T>, new()
+{
+
+	public T[] GetInputSlotsForConnector(object connector)
+	{
 		return InputSlots;
 	}
 
-	public T[] InputSlots => Slots; 
+	public T[] InputSlots => Slots;
 
 	public T[] Slots { get; }
-	
-	public T[] OutputSlots => Slots; 
-	
-	public T[] GetOutputSlotsForConnector(object _) {
+
+	public T[] OutputSlots => Slots;
+
+	public T[] GetOutputSlotsForConnector(object _)
+	{
 		return InputSlots;
 	}
 
